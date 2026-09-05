@@ -11,7 +11,7 @@ export function GameScreen() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4">
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-2xl mx-auto overflow-hidden">
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={() => setScreen('levelSelect')}

@@ -179,7 +179,7 @@ export function GameBoard() {
       width={CANVAS_WIDTH}
       height={CANVAS_HEIGHT}
       onClick={handleCanvasClick}
-      className="bg-white rounded-lg shadow-lg cursor-pointer"
+      className="bg-white rounded-lg shadow-lg cursor-pointer max-w-full h-auto"
     />
   );
 }
