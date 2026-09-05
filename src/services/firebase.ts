@@ -252,3 +252,20 @@ export async function saveAttempt(attempt: {
     return false;
   }
 }
+
+export async function getAttempts(): Promise<any[]> {
+  const { db } = initFirebase();
+  if (!db) return [];
+
+  try {
+    const q = query(collection(db, 'attempts'), orderBy('timestamp', 'desc'));
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+  } catch (error) {
+    console.error('Failed to fetch attempts:', error);
+    return [];
+  }
+}
