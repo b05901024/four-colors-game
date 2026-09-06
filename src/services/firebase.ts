@@ -84,6 +84,11 @@ export function signOut() {
   if (auth) auth.signOut();
 }
 
+export function getCurrentUser(): User | null {
+  const { auth } = initFirebase();
+  return auth?.currentUser || null;
+}
+
 // Owner management
 export async function isOwner(user: User | null): Promise<boolean> {
   if (!user?.email) return false;

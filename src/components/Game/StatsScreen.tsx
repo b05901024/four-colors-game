@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useGameStore } from '../../stores/gameStore';
-import { getAttempts, deleteAttempt, isOwner } from '../../services/firebase';
+import { getAttempts, deleteAttempt, isOwner, getCurrentUser } from '../../services/firebase';
 
 interface Attempt {
   id: string;
@@ -28,7 +28,7 @@ export function StatsScreen() {
   }, []);
 
   const checkOwner = async () => {
-    const user = (await import('firebase/auth')).getAuth().currentUser;
+    const user = getCurrentUser();
     if (user) setOwner(await isOwner(user));
   };
 
@@ -143,6 +143,7 @@ export function StatsScreen() {
                     <th className="pb-2">名字</th>
                     <th className="pb-2">電話</th>
                     <th className="pb-2">關卡</th>
+                    <th className="pb-2">完成時間</th>
                     <th className="pb-2">時間</th>
                     <th className="pb-2">錯誤</th>
                     <th className="pb-2">首次著色</th>
@@ -157,6 +158,11 @@ export function StatsScreen() {
                       <td className="py-2 text-gray-700">{attempt.playerName || '-'}</td>
                       <td className="py-2 text-gray-500">{attempt.playerPhone || '-'}</td>
                       <td className="py-2 text-gray-700">{getLevelName(attempt.levelId)}</td>
+                      <td className="py-2 text-gray-500 text-xs">
+                        {attempt.timestamp?.toDate
+                          ? attempt.timestamp.toDate().toLocaleString('zh-TW')
+                          : '-'}
+                      </td>
                       <td className="py-2">{attempt.timeSpent}秒</td>
                       <td className="py-2">{attempt.errorCount}</td>
                       <td className="py-2">{attempt.firstDrawTime || 0}秒</td>
