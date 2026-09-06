@@ -2,10 +2,10 @@ import { useGameStore } from '../../stores/gameStore';
 import { GAME_COLORS, GameColor } from '../../types';
 
 const colorNames: Record<GameColor, string> = {
-  '#E74C3C': 'Red',
-  '#3498DB': 'Blue',
-  '#2ECC71': 'Green',
-  '#F1C40F': 'Yellow',
+  '#E74C3C': '紅色',
+  '#3498DB': '藍色',
+  '#2ECC71': '綠色',
+  '#F1C40F': '黃色',
 };
 
 export function ColorPalette() {

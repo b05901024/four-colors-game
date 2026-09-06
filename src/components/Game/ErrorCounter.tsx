@@ -5,7 +5,7 @@ export function ErrorCounter() {
 
   return (
     <div className="text-center">
-      <p className="text-sm text-gray-500">Errors</p>
+      <p className="text-sm text-gray-500">錯誤</p>
       <p className="text-2xl font-bold text-red-500">{errorCount}</p>
     </div>
   );

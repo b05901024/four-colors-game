@@ -62,12 +62,12 @@ export function StatsScreen() {
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4">
         <div className="max-w-2xl mx-auto">
           <div className="flex items-center justify-between mb-6">
-            <button onClick={() => setScreen('menu')} className="px-4 py-2 text-gray-600 hover:text-gray-800">← Back</button>
-            <h1 className="text-2xl font-bold text-gray-800">Game Stats</h1>
+            <button onClick={() => setScreen('menu')} className="px-4 py-2 text-gray-600 hover:text-gray-800">← 返回</button>
+            <h1 className="text-2xl font-bold text-gray-800">遊戲統計</h1>
             <div className="w-20"></div>
           </div>
           <div className="bg-white rounded-lg shadow-md p-8 text-center">
-            <p className="text-gray-500">Loading...</p>
+            <p className="text-gray-500">載入中...</p>
           </div>
         </div>
       </div>
@@ -78,69 +78,69 @@ export function StatsScreen() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4">
       <div className="max-w-2xl mx-auto">
         <div className="flex items-center justify-between mb-6">
-          <button onClick={() => setScreen('menu')} className="px-4 py-2 text-gray-600 hover:text-gray-800">← Back</button>
-          <h1 className="text-2xl font-bold text-gray-800">Game Stats</h1>
-          <button onClick={loadAttempts} className="px-4 py-2 text-purple-600 hover:text-purple-800">Refresh</button>
+          <button onClick={() => setScreen('menu')} className="px-4 py-2 text-gray-600 hover:text-gray-800">← 返回</button>
+          <h1 className="text-2xl font-bold text-gray-800">遊戲統計</h1>
+          <button onClick={loadAttempts} className="px-4 py-2 text-purple-600 hover:text-purple-800">重新整理</button>
         </div>
 
         {/* Summary */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <div className="bg-white rounded-lg shadow-md p-4 text-center">
             <div className="text-2xl font-bold text-purple-600">{completedAttempts.length}</div>
-            <div className="text-xs text-gray-500">Completed</div>
+            <div className="text-xs text-gray-500">已完成</div>
           </div>
           <div className="bg-white rounded-lg shadow-md p-4 text-center">
-            <div className="text-2xl font-bold text-blue-600">{avgTime}s</div>
-            <div className="text-xs text-gray-500">Avg Time</div>
+            <div className="text-2xl font-bold text-blue-600">{avgTime}秒</div>
+            <div className="text-xs text-gray-500">平均時間</div>
           </div>
           <div className="bg-white rounded-lg shadow-md p-4 text-center">
             <div className="text-2xl font-bold text-red-600">{avgErrors}</div>
-            <div className="text-xs text-gray-500">Avg Errors</div>
+            <div className="text-xs text-gray-500">平均錯誤</div>
           </div>
           <div className="bg-white rounded-lg shadow-md p-4 text-center">
-            <div className="text-2xl font-bold text-green-600">{avgFirstDraw}s</div>
-            <div className="text-xs text-gray-500">Avg First Draw</div>
+            <div className="text-2xl font-bold text-green-600">{avgFirstDraw}秒</div>
+            <div className="text-xs text-gray-500">首次著色</div>
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-4 mb-6">
           <div className="bg-white rounded-lg shadow-md p-4 text-center">
-            <div className="text-2xl font-bold text-amber-600">{avgPause}s</div>
-            <div className="text-xs text-gray-500">Avg Pause</div>
+            <div className="text-2xl font-bold text-amber-600">{avgPause}秒</div>
+            <div className="text-xs text-gray-500">平均停頓</div>
           </div>
           <div className="bg-white rounded-lg shadow-md p-4 text-center">
-            <div className="text-2xl font-bold text-red-600">{maxPause}s</div>
-            <div className="text-xs text-gray-500">Max Pause</div>
+            <div className="text-2xl font-bold text-red-600">{maxPause}秒</div>
+            <div className="text-xs text-gray-500">最長停頓</div>
           </div>
         </div>
 
         {/* Attempt History */}
         <div className="bg-white rounded-lg shadow-md p-4">
-          <h3 className="font-semibold text-gray-800 mb-3">Recent Attempts</h3>
+          <h3 className="font-semibold text-gray-800 mb-3">最近遊玩紀錄</h3>
           {completedAttempts.length === 0 ? (
-            <p className="text-gray-500 text-sm">No completed attempts yet.</p>
+            <p className="text-gray-500 text-sm">尚無完成紀錄。</p>
           ) : (
             <div className="max-h-96 overflow-y-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="text-left text-gray-500 border-b">
-                    <th className="pb-2">Level</th>
-                    <th className="pb-2">Time</th>
-                    <th className="pb-2">Errors</th>
-                    <th className="pb-2">1st Draw</th>
-                    <th className="pb-2">Avg Pause</th>
-                    <th className="pb-2">Max Pause</th>
+                    <th className="pb-2">關卡</th>
+                    <th className="pb-2">時間</th>
+                    <th className="pb-2">錯誤</th>
+                    <th className="pb-2">首次著色</th>
+                    <th className="pb-2">平均停頓</th>
+                    <th className="pb-2">最長停頓</th>
                   </tr>
                 </thead>
                 <tbody>
                   {completedAttempts.map((attempt) => (
                     <tr key={attempt.id} className="border-b last:border-b-0">
                       <td className="py-2 text-gray-700">{getLevelName(attempt.levelId)}</td>
-                      <td className="py-2">{attempt.timeSpent}s</td>
+                      <td className="py-2">{attempt.timeSpent}秒</td>
                       <td className="py-2">{attempt.errorCount}</td>
-                      <td className="py-2">{attempt.firstDrawTime || 0}s</td>
-                      <td className="py-2">{attempt.avgPauseTime || 0}s</td>
-                      <td className="py-2">{attempt.maxPauseTime || 0}s</td>
+                      <td className="py-2">{attempt.firstDrawTime || 0}秒</td>
+                      <td className="py-2">{attempt.avgPauseTime || 0}秒</td>
+                      <td className="py-2">{attempt.maxPauseTime || 0}秒</td>
                     </tr>
                   ))}
                 </tbody>
@@ -164,7 +164,7 @@ export function StatsScreen() {
             }}
             className="w-full px-4 py-2 bg-purple-100 text-purple-600 rounded-lg hover:bg-purple-200"
           >
-            Export Data (JSON)
+            匯出資料 (JSON)
           </button>
         </div>
       </div>

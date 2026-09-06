@@ -3,6 +3,14 @@ import { useGameStore } from '../../stores/gameStore';
 import { Level } from '../../types';
 import { Editor } from '../Editor/Editor';
 
+const DIFFICULTY_LABELS: Record<number, string> = {
+  1: '★',
+  2: '★★',
+  3: '★★★',
+  4: '★★★★',
+  5: '★★★★★',
+};
+
 export function LevelManager() {
   const { levels, setScreen, removeLevel, loadLevels } = useGameStore();
   const [editingLevel, setEditingLevel] = useState<Level | null>(null);
@@ -22,7 +30,7 @@ export function LevelManager() {
   }
 
   const handleDelete = async (levelId: string, levelName: string) => {
-    if (confirm(`Are you sure you want to delete "${levelName}"?`)) {
+    if (confirm(`確定要刪除「${levelName}」嗎？`)) {
       await removeLevel(levelId);
     }
   };
@@ -35,25 +43,25 @@ export function LevelManager() {
             onClick={() => setScreen('menu')}
             className="px-4 py-2 text-gray-600 hover:text-gray-800"
           >
-            ← Back
+            ← 返回
           </button>
-          <h1 className="text-2xl font-bold text-gray-800">Manage Levels</h1>
+          <h1 className="text-2xl font-bold text-gray-800">管理關卡</h1>
           <button
             onClick={() => setShowEditor(true)}
             className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
           >
-            + New Level
+            + 新增關卡
           </button>
         </div>
 
         {levels.length === 0 ? (
           <div className="text-center py-12 bg-white rounded-xl shadow-md">
-            <p className="text-gray-500 text-lg mb-4">No levels yet</p>
+            <p className="text-gray-500 text-lg mb-4">尚未建立關卡</p>
             <button
               onClick={() => setShowEditor(true)}
               className="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
             >
-              Create Your First Level
+              建立第一個關卡
             </button>
           </div>
         ) : (
@@ -73,7 +81,10 @@ export function LevelManager() {
                 <div className="flex-1">
                   <h3 className="font-semibold text-gray-800">{level.name}</h3>
                   <p className="text-sm text-gray-500">
-                    {level.nodes.length} nodes • {level.edges.length} edges
+                    {level.nodes.length} 區域 • {level.edges.length} 邊界
+                  </p>
+                  <p className="text-sm text-amber-500">
+                    {DIFFICULTY_LABELS[level.difficulty || 1]}
                   </p>
                 </div>
                 <div className="flex gap-2">
@@ -81,13 +92,13 @@ export function LevelManager() {
                     onClick={() => setEditingLevel(level)}
                     className="px-4 py-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200"
                   >
-                    Edit
+                    編輯
                   </button>
                   <button
                     onClick={() => handleDelete(level.id, level.name)}
                     className="px-4 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200"
                   >
-                    Delete
+                    刪除
                   </button>
                 </div>
               </div>

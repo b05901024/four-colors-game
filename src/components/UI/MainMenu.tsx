@@ -73,7 +73,7 @@ export function MainMenu() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-500 to-blue-600 flex items-center justify-center">
-        <div className="text-white text-xl">Loading...</div>
+        <div className="text-white text-xl">載入中...</div>
       </div>
     );
   }
@@ -81,9 +81,9 @@ export function MainMenu() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-500 to-blue-600 flex items-center justify-center p-4">
       <div className="text-center">
-        <h1 className="text-5xl font-bold text-white mb-4">Four Colors</h1>
+        <h1 className="text-5xl font-bold text-white mb-4">四色遊戲</h1>
         <p className="text-xl text-purple-100 mb-12">
-          Color the regions with only 4 colors
+          用 4 種顏色為區域著色
         </p>
 
         <div className="space-y-4">
@@ -91,7 +91,7 @@ export function MainMenu() {
             onClick={() => setScreen('levelSelect')}
             className="w-64 px-8 py-4 bg-white text-purple-600 text-xl font-bold rounded-xl shadow-lg hover:shadow-xl transition-shadow"
           >
-            Play Game
+            開始遊戲
           </button>
 
           {owner && (
@@ -100,28 +100,28 @@ export function MainMenu() {
                 onClick={() => setScreen('editor')}
                 className="w-64 px-8 py-4 bg-purple-700 text-white text-xl font-bold rounded-xl shadow-lg hover:shadow-xl transition-shadow"
               >
-                Create Level
+                建立關卡
               </button>
 
               <button
                 onClick={() => setScreen('manageLevels')}
                 className="w-64 px-8 py-4 bg-blue-600 text-white text-xl font-bold rounded-xl shadow-lg hover:shadow-xl transition-shadow"
               >
-                Manage Levels
+                管理關卡
               </button>
 
               <button
                 onClick={() => setScreen('stats')}
                 className="w-64 px-8 py-4 bg-amber-500 text-white text-xl font-bold rounded-xl shadow-lg hover:shadow-xl transition-shadow"
               >
-                Stats
+                統計數據
               </button>
 
               <button
                 onClick={() => { setShowOwnerManager(!showOwnerManager); loadOwners(); }}
                 className="w-64 px-4 py-2 bg-white/10 text-white text-sm rounded-lg hover:bg-white/20"
               >
-                Manage Owners
+                管理擁有者
               </button>
             </>
           )}
@@ -130,7 +130,7 @@ export function MainMenu() {
         {/* Owner Manager Modal */}
         {showOwnerManager && (
           <div className="mt-4 p-4 bg-white/10 rounded-lg backdrop-blur-sm text-left max-w-sm mx-auto">
-            <h3 className="text-white font-semibold mb-3">Owners</h3>
+            <h3 className="text-white font-semibold mb-3">擁有者列表</h3>
             <div className="space-y-2 mb-3">
               {ownerList.map((email) => (
                 <div key={email} className="flex items-center justify-between bg-white/10 rounded px-3 py-1">
@@ -157,14 +157,14 @@ export function MainMenu() {
                 onClick={handleAddOwner}
                 className="px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700"
               >
-                Add
+                新增
               </button>
             </div>
             <button
               onClick={() => setShowOwnerManager(false)}
               className="mt-2 text-purple-200 text-sm hover:text-white"
             >
-              Close
+              關閉
             </button>
           </div>
         )}
@@ -174,7 +174,7 @@ export function MainMenu() {
             <div className="flex items-center justify-center gap-2 text-purple-200 text-sm">
               <span>{user.email}</span>
               <button onClick={handleSignOut} className="text-purple-300 hover:text-white underline">
-                Sign out
+                登出
               </button>
             </div>
           ) : (
@@ -182,17 +182,17 @@ export function MainMenu() {
               onClick={handleSignIn}
               className="px-6 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 text-sm"
             >
-              Sign in with Google
+              使用 Google 登入
             </button>
           )}
         </div>
 
         {owner && (
-          <p className="mt-4 text-green-300 text-sm">✓ Owner access</p>
+          <p className="mt-4 text-green-300 text-sm">✓ 管理者權限</p>
         )}
 
         <p className="mt-8 text-purple-200 text-sm">
-          A Progressive Web App • Works on all devices
+          PWA 應用程式 • 支援所有裝置
         </p>
       </div>
     </div>

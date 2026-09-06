@@ -24,7 +24,8 @@ export function Editor({ editingLevel, onClose }: EditorProps) {
   const originalImageRef = useRef<HTMLImageElement | null>(null);
 
   const [mode, setMode] = useState<EditorMode>(editingLevel ? 'edit' : 'detect');
-  const [levelName, setLevelName] = useState(editingLevel?.name || 'New Level');
+  const [levelName, setLevelName] = useState(editingLevel?.name || '新關卡');
+  const [difficulty, setDifficulty] = useState(editingLevel?.difficulty || 1);
   const [saving, setSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState('');
   const [saveProgress, setSaveProgress] = useState(0);
@@ -98,7 +99,7 @@ export function Editor({ editingLevel, onClose }: EditorProps) {
       ctx.beginPath();
       ctx.moveTo(source.x, source.y);
       ctx.lineTo(target.x, target.y);
-      ctx.strokeStyle = edge.id === selectedEdge ? '#EF4444' : '#8B5CF6';
+      ctx.strokeStyle = edge.id === selectedEdge ? '#EF4444' : '#3B82F6';
       ctx.lineWidth = edge.id === selectedEdge ? 4 : 2;
       ctx.stroke();
     });
@@ -108,9 +109,9 @@ export function Editor({ editingLevel, onClose }: EditorProps) {
       ctx.beginPath();
       ctx.arc(node.x, node.y, 15, 0, Math.PI * 2);
       if (node.id === selectedNode || node.id === edgeStart) {
-        ctx.fillStyle = '#8B5CF6';
+        ctx.fillStyle = '#F97316';
       } else {
-        ctx.fillStyle = 'rgba(139, 92, 246, 0.7)';
+        ctx.fillStyle = 'rgba(249, 115, 22, 0.7)';
       }
       ctx.fill();
       ctx.strokeStyle = '#FFFFFF';
@@ -431,12 +432,12 @@ export function Editor({ editingLevel, onClose }: EditorProps) {
   // Region detection
   const handleDetectRegions = async () => {
     if (!originalImageRef.current) {
-      setDetectionStatus('No image loaded');
+      setDetectionStatus('未載入圖片');
       return;
     }
 
     setIsDetecting(true);
-    setDetectionStatus('Loading image for detection...');
+    setDetectionStatus('載入圖片進行偵測...');
     setDetectedRegions([]);
     setDetectedEdges([]);
 
@@ -446,7 +447,7 @@ export function Editor({ editingLevel, onClose }: EditorProps) {
     const tempCtx = tempCanvas.getContext('2d');
     
     if (!tempCtx) {
-      setDetectionStatus('Failed to create canvas');
+      setDetectionStatus('建立畫布失敗');
       setIsDetecting(false);
       return;
     }
@@ -461,7 +462,7 @@ export function Editor({ editingLevel, onClose }: EditorProps) {
     const y = (CANVAS_HEIGHT - newHeight) / 2;
     tempCtx.drawImage(img, x, y, newWidth, newHeight);
 
-    setDetectionStatus('Analyzing image...');
+    setDetectionStatus('分析圖片中...');
 
     await new Promise((r) => setTimeout(r, 100));
 
@@ -473,13 +474,13 @@ export function Editor({ editingLevel, onClose }: EditorProps) {
       setSelectedRegionIds(new Set(regions.map((r) => r.id)));
       
       if (regions.length === 0) {
-        setDetectionStatus('No white regions found. The image needs clear dark borders separating white areas.');
+        setDetectionStatus('未找到白色區域。圖片需要清晰的深色邊框分隔白色區域。');
       } else {
-        setDetectionStatus(`Found ${regions.length} regions with ${edges.length} connections`);
+        setDetectionStatus(`找到 ${regions.length} 個區域，${edges.length} 個連接`);
       }
     } catch (error) {
       console.error('Detection failed:', error);
-      setDetectionStatus('Detection failed. Error: ' + (error as Error).message);
+      setDetectionStatus('偵測失敗。錯誤：' + (error as Error).message);
     }
     
     setIsDetecting(false);
@@ -544,13 +545,13 @@ export function Editor({ editingLevel, onClose }: EditorProps) {
 
   const handleSave = async () => {
     if (!levelName.trim()) {
-      alert('Please enter a level name');
+      alert('請輸入關卡名稱');
       return;
     }
 
     setSaving(true);
     setSaveProgress(5);
-    setSaveStatus('Preparing image...');
+    setSaveStatus('準備圖片...');
 
     let imageUrl = '';
     if (originalImageRef.current && hasImage) {
@@ -574,11 +575,12 @@ export function Editor({ editingLevel, onClose }: EditorProps) {
     }
 
     setSaveProgress(30);
-    setSaveStatus('Building level data...');
+    setSaveStatus('建立關卡資料...');
     await new Promise(r => setTimeout(r, 30));
 
     const levelData = {
       name: levelName,
+      difficulty,
       imageUrl,
       nodes,
       edges,
@@ -586,14 +588,14 @@ export function Editor({ editingLevel, onClose }: EditorProps) {
     };
 
     setSaveProgress(50);
-    setSaveStatus('Serializing data...');
+    setSaveStatus('序列化資料...');
     await new Promise(r => setTimeout(r, 30));
 
     const dataSize = JSON.stringify(levelData).length;
     console.log('Level data size:', (dataSize / 1024).toFixed(1), 'KB');
 
     setSaveProgress(70);
-    setSaveStatus('Writing to storage...');
+    setSaveStatus('寫入儲存空間...');
     await new Promise(r => setTimeout(r, 30));
 
     try {
@@ -604,15 +606,15 @@ export function Editor({ editingLevel, onClose }: EditorProps) {
       }
       
       setSaveProgress(95);
-      setSaveStatus('Verifying...');
+      setSaveStatus('驗證中...');
       await new Promise(r => setTimeout(r, 50));
       
       setSaveProgress(100);
-      setSaveStatus(`Done! (${(dataSize / 1024).toFixed(1)}KB)`);
+      setSaveStatus(`完成！(${(dataSize / 1024).toFixed(1)}KB)`);
     } catch (error) {
       console.error('Save failed:', error);
       setSaveProgress(0);
-      setSaveStatus('Error: ' + (error as Error).message);
+      setSaveStatus('錯誤：' + (error as Error).message);
     }
 
     setSaving(false);
@@ -668,10 +670,10 @@ export function Editor({ editingLevel, onClose }: EditorProps) {
             onClick={() => (onClose ? onClose() : setScreen('levelSelect'))}
             className="px-4 py-2 text-gray-600 hover:text-gray-800"
           >
-            ← Back
+            ← 返回
           </button>
           <h1 className="text-2xl font-bold text-gray-800">
-            {editingLevel ? 'Edit Level' : 'Level Editor'}
+            {editingLevel ? '編輯關卡' : '關卡編輯器'}
           </h1>
           <div className="w-20"></div>
         </div>
@@ -687,7 +689,7 @@ export function Editor({ editingLevel, onClose }: EditorProps) {
                   : 'bg-white text-gray-600 hover:bg-gray-100'
               }`}
             >
-              Edit Graph
+              編輯圖形
             </button>
             <button
               onClick={() => {
@@ -702,7 +704,7 @@ export function Editor({ editingLevel, onClose }: EditorProps) {
                   : 'bg-white text-gray-600 hover:bg-gray-100'
               }`}
             >
-              Detect Again
+              重新偵測
             </button>
           </div>
         )}
@@ -737,7 +739,7 @@ export function Editor({ editingLevel, onClose }: EditorProps) {
           {/* Right Panel */}
           <div className="lg:w-80 space-y-4">
             <div className="bg-white rounded-lg shadow-md p-4">
-              <h3 className="font-semibold text-gray-800 mb-3">Level Name</h3>
+              <h3 className="font-semibold text-gray-800 mb-3">關卡名稱</h3>
               <input
                 type="text"
                 value={levelName}
@@ -747,7 +749,25 @@ export function Editor({ editingLevel, onClose }: EditorProps) {
             </div>
 
             <div className="bg-white rounded-lg shadow-md p-4">
-              <h3 className="font-semibold text-gray-800 mb-3">Background Image</h3>
+              <h3 className="font-semibold text-gray-800 mb-3">難度</h3>
+              <div className="flex gap-1">
+                {[1, 2, 3, 4, 5].map((d) => (
+                  <button
+                    key={d}
+                    type="button"
+                    onClick={() => setDifficulty(d)}
+                    className={`text-2xl ${
+                      d <= difficulty ? 'text-amber-400' : 'text-gray-300'
+                    } hover:text-amber-400 transition-colors`}
+                  >
+                    ★
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg shadow-md p-4">
+              <h3 className="font-semibold text-gray-800 mb-3">背景圖片</h3>
               <input
                 type="file"
                 ref={imageInputRef}
@@ -760,7 +780,7 @@ export function Editor({ editingLevel, onClose }: EditorProps) {
                   onClick={() => imageInputRef.current?.click()}
                   className="flex-1 px-4 py-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200"
                 >
-                  Upload Image
+                  上傳圖片
                 </button>
                 {hasImage && (
                   <button
@@ -777,7 +797,7 @@ export function Editor({ editingLevel, onClose }: EditorProps) {
                     }}
                     className="px-4 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200"
                   >
-                    Remove
+                    移除
                   </button>
                 )}
               </div>
@@ -786,7 +806,7 @@ export function Editor({ editingLevel, onClose }: EditorProps) {
                   onClick={handleStartCrop}
                   className="w-full px-4 py-2 bg-purple-100 text-purple-600 rounded-lg hover:bg-purple-200"
                 >
-                  Crop Image
+                  裁切圖片
                 </button>
               )}
               {isCropping && (
@@ -796,13 +816,13 @@ export function Editor({ editingLevel, onClose }: EditorProps) {
                     disabled={!cropStart || !cropEnd}
                     className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
                   >
-                    Apply Crop
+                    套用裁切
                   </button>
                   <button
                     onClick={handleCancelCrop}
                     className="flex-1 px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300"
                   >
-                    Cancel
+                    取消
                   </button>
                 </div>
               )}
@@ -811,9 +831,9 @@ export function Editor({ editingLevel, onClose }: EditorProps) {
             {/* Detection Panel */}
             {mode === 'detect' && (
               <div className="bg-white rounded-lg shadow-md p-4">
-                <h3 className="font-semibold text-gray-800 mb-3">Region Detection</h3>
+                <h3 className="font-semibold text-gray-800 mb-3">區域偵測</h3>
                 <p className="text-xs text-gray-500 mb-3">
-                  Detects white blocks separated by dark borders
+                  偵測由深色邊框分隔的白色區塊
                 </p>
                 <button
                   onClick={handleDetectRegions}
@@ -826,10 +846,10 @@ export function Editor({ editingLevel, onClose }: EditorProps) {
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                       </svg>
-                      Detecting...
+                      偵測中...
                     </>
                   ) : (
-                    'Detect Regions'
+                    '開始偵測'
                   )}
                 </button>
                 
@@ -845,7 +865,7 @@ export function Editor({ editingLevel, onClose }: EditorProps) {
                     {isDetecting && (
                       <div className="flex items-center gap-2">
                         <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-                        Processing...
+                        處理中...
                       </div>
                     )}
                     {!isDetecting && detectionStatus}
@@ -859,20 +879,20 @@ export function Editor({ editingLevel, onClose }: EditorProps) {
               <div className="bg-white rounded-lg shadow-md p-4">
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="font-semibold text-gray-800">
-                    Regions ({selectedRegionIds.size}/{detectedRegions.length})
+                    區域 ({selectedRegionIds.size}/{detectedRegions.length})
                   </h3>
                   <div className="flex gap-1">
                     <button
                       onClick={handleSelectAllRegions}
                       className="text-xs px-2 py-1 bg-gray-100 rounded hover:bg-gray-200"
                     >
-                      All
+                      全選
                     </button>
                     <button
                       onClick={handleDeselectAllRegions}
                       className="text-xs px-2 py-1 bg-gray-100 rounded hover:bg-gray-200"
                     >
-                      None
+                      取消
                     </button>
                   </div>
                 </div>
@@ -890,7 +910,7 @@ export function Editor({ editingLevel, onClose }: EditorProps) {
                       />
                       <div className="w-4 h-4 rounded bg-white border" />
                       <span className="text-sm text-gray-600">
-                        Region {region.id.replace('region-', '')}
+                        區域 {region.id.replace('region-', '')}
                       </span>
                     </label>
                   ))}
@@ -899,7 +919,7 @@ export function Editor({ editingLevel, onClose }: EditorProps) {
                   onClick={handleConfirmDetection}
                   className="w-full mt-3 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
                 >
-                  Confirm & Edit Graph
+                  確認並編輯圖形
                 </button>
               </div>
             )}
@@ -907,7 +927,7 @@ export function Editor({ editingLevel, onClose }: EditorProps) {
             {/* Edit Tools - only show after detection confirmed */}
             {mode === 'edit' && hasConfirmedDetection && (
               <div className="bg-white rounded-lg shadow-md p-4">
-                <h3 className="font-semibold text-gray-800 mb-3">Tools</h3>
+                <h3 className="font-semibold text-gray-800 mb-3">工具</h3>
                 <div className="flex flex-col gap-2">
                   <button
                     onClick={() => setTool('select')}
@@ -917,7 +937,7 @@ export function Editor({ editingLevel, onClose }: EditorProps) {
                         : 'bg-gray-100 hover:bg-gray-200'
                     }`}
                   >
-                    Select
+                    選取
                   </button>
                   <button
                     onClick={() => setTool('node')}
@@ -927,7 +947,7 @@ export function Editor({ editingLevel, onClose }: EditorProps) {
                         : 'bg-gray-100 hover:bg-gray-200'
                     }`}
                   >
-                    Add Node
+                    新增節點
                   </button>
                   <button
                     onClick={() => {
@@ -940,7 +960,7 @@ export function Editor({ editingLevel, onClose }: EditorProps) {
                         : 'bg-gray-100 hover:bg-gray-200'
                     }`}
                   >
-                    Add Edge
+                    新增邊
                   </button>
                   <button
                     onClick={() => setTool('deleteEdge')}
@@ -950,20 +970,20 @@ export function Editor({ editingLevel, onClose }: EditorProps) {
                         : 'bg-gray-100 hover:bg-gray-200'
                     }`}
                   >
-                    Delete Edge
+                    刪除邊
                   </button>
                 </div>
                 {tool === 'edge' && edgeStart && (
-                  <p className="text-xs text-purple-600 mt-2">Click second node to finish edge</p>
+                  <p className="text-xs text-purple-600 mt-2">點擊第二個節點以完成邊</p>
                 )}
                 {tool === 'deleteEdge' && (
-                  <p className="text-xs text-red-600 mt-2">Click on an edge to delete it</p>
+                  <p className="text-xs text-red-600 mt-2">點擊邊以刪除</p>
                 )}
               </div>
             )}
 
             <div className="bg-white rounded-lg shadow-md p-4">
-              <h3 className="font-semibold text-gray-800 mb-3">Actions</h3>
+              <h3 className="font-semibold text-gray-800 mb-3">操作</h3>
               <div className="flex flex-col gap-2">
                 {mode === 'edit' && hasConfirmedDetection && (
                   <>
@@ -972,14 +992,14 @@ export function Editor({ editingLevel, onClose }: EditorProps) {
                       disabled={!selectedNode}
                       className="px-4 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 disabled:opacity-50"
                     >
-                      Delete Selected Node
+                      刪除選取節點
                     </button>
                     <button
                       onClick={handleDeleteEdge}
                       disabled={!selectedEdge}
                       className="px-4 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 disabled:opacity-50"
                     >
-                      Delete Selected Edge
+                      刪除選取邊
                     </button>
                   </>
                 )}
@@ -987,7 +1007,7 @@ export function Editor({ editingLevel, onClose }: EditorProps) {
                   onClick={handleClearAll}
                   className="px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200"
                 >
-                  Clear All
+                  清除全部
                 </button>
                 <button
                   onClick={handleSave}
@@ -1000,10 +1020,10 @@ export function Editor({ editingLevel, onClose }: EditorProps) {
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                       </svg>
-                      Saving...
+                      儲存中...
                     </>
                   ) : (
-                    editingLevel ? 'Update Level' : 'Save Level'
+                    editingLevel ? '更新關卡' : '儲存關卡'
                   )}
                 </button>
                 {saving && (
@@ -1030,22 +1050,22 @@ export function Editor({ editingLevel, onClose }: EditorProps) {
             </div>
 
             <div className="bg-white rounded-lg shadow-md p-4">
-              <h3 className="font-semibold text-gray-800 mb-2">Stats</h3>
-              <p className="text-sm text-gray-600">Nodes: {nodes.length}</p>
-              <p className="text-sm text-gray-600">Edges: {edges.length}</p>
+              <h3 className="font-semibold text-gray-800 mb-2">統計</h3>
+              <p className="text-sm text-gray-600">節點：{nodes.length}</p>
+              <p className="text-sm text-gray-600">邊：{edges.length}</p>
               {tool === 'edge' && edgeStart && (
                 <p className="text-sm text-purple-600">
-                  Click second node to create edge
+                  點擊第二個節點以建立邊
                 </p>
               )}
               {tool === 'select' && selectedNode && (
                 <p className="text-sm text-purple-600">
-                  Selected: Node {nodes.find(n => n.id === selectedNode)?.label}
+                  已選取：節點 {nodes.find(n => n.id === selectedNode)?.label}
                 </p>
               )}
               {tool === 'select' && selectedEdge && (
                 <p className="text-sm text-red-600">
-                  Selected: Edge {selectedEdge}
+                  已選取：邊 {selectedEdge}
                 </p>
               )}
             </div>

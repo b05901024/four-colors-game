@@ -20,7 +20,7 @@ export function Timer() {
 
   return (
     <div className="text-center">
-      <p className="text-sm text-gray-500">Time</p>
+      <p className="text-sm text-gray-500">時間</p>
       <p className="text-2xl font-bold text-gray-800">
         {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
       </p>

@@ -337,7 +337,7 @@ export function drawDetectedRegions(
     const isSelected = selectedIds.has(region.id);
     
     // Draw region pixels
-    ctx.fillStyle = isSelected ? 'rgba(139, 92, 246, 0.5)' : 'rgba(200, 200, 200, 0.3)';
+    ctx.fillStyle = isSelected ? 'rgba(249, 115, 22, 0.5)' : 'rgba(200, 200, 200, 0.3)';
     region.pixels.forEach((p) => {
       ctx.fillRect(p.x, p.y, 2, 2);
     });
@@ -349,7 +349,7 @@ export function drawDetectedRegions(
       // Background circle
       ctx.beginPath();
       ctx.arc(region.centroid.x, region.centroid.y, 12, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(139, 92, 246, 0.9)';
+      ctx.fillStyle = 'rgba(249, 115, 22, 0.9)';
       ctx.fill();
       ctx.strokeStyle = '#FFFFFF';
       ctx.lineWidth = 2;
@@ -365,7 +365,7 @@ export function drawDetectedRegions(
   });
 
   // Draw edges between selected regions
-  ctx.strokeStyle = 'rgba(139, 92, 246, 0.6)';
+  ctx.strokeStyle = 'rgba(59, 130, 246, 0.6)';
   ctx.lineWidth = 2;
   
   edges.forEach((edge) => {

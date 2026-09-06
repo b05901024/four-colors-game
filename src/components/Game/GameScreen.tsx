@@ -17,7 +17,7 @@ export function GameScreen() {
             onClick={() => setScreen('levelSelect')}
             className="px-4 py-2 text-gray-600 hover:text-gray-800"
           >
-            ← Back
+            ← 返回
           </button>
           <h1 className="text-2xl font-bold text-gray-800">
             {currentLevel.name}
@@ -26,7 +26,7 @@ export function GameScreen() {
             onClick={resetLevel}
             className="px-4 py-2 text-gray-600 hover:text-gray-800"
           >
-            Reset
+            重置
           </button>
         </div>
 
@@ -46,16 +46,16 @@ export function GameScreen() {
         {isCompleted && (
           <div className="text-center p-6 bg-green-50 rounded-lg border-2 border-green-200">
             <h2 className="text-xl font-bold text-green-700 mb-2">
-              Level Complete!
+              關卡完成！
             </h2>
             <p className="text-green-600">
-              You solved it with {useGameStore.getState().errorCount} errors
+              你用了 {useGameStore.getState().errorCount} 次錯誤完成
             </p>
             <button
               onClick={() => setScreen('levelSelect')}
               className="mt-4 px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
             >
-              Continue
+              繼續
             </button>
           </div>
         )}

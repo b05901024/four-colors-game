@@ -18,6 +18,7 @@ export interface Level {
   imageUrl: string;
   nodes: Node[];
   edges: Edge[];
+  difficulty: number;
   createdAt: number;
 }
 
