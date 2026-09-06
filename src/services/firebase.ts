@@ -249,10 +249,15 @@ export async function saveAttempt(attempt: {
   if (!db) return false;
 
   try {
-    await addDoc(collection(db, 'attempts'), {
+    const data: Record<string, any> = {
       ...attempt,
       timestamp: serverTimestamp(),
+    };
+    // Remove undefined fields (Firestore doesn't support undefined)
+    Object.keys(data).forEach(key => {
+      if (data[key] === undefined) delete data[key];
     });
+    await addDoc(collection(db, 'attempts'), data);
     return true;
   } catch (error) {
     console.error('Failed to save attempt:', error);

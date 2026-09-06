@@ -133,7 +133,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
         timeSpent,
         errorCount,
         playerName: state.playerName,
-        playerPhone: state.playerPhone || undefined,
+        playerPhone: state.playerPhone || '',
         firstDrawTime: firstDrawSec,
         avgPauseTime: avgPause,
         maxPauseTime: maxPause,
