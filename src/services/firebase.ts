@@ -240,7 +240,7 @@ export async function saveAttempt(attempt: {
   timeSpent: number;
   errorCount: number;
   playerName: string;
-  playerPhone?: string;
+  playerPhone: string;
   firstDrawTime?: number;
   avgPauseTime?: number;
   maxPauseTime?: number;
@@ -249,15 +249,18 @@ export async function saveAttempt(attempt: {
   if (!db) return false;
 
   try {
-    const data: Record<string, any> = {
-      ...attempt,
+    await addDoc(collection(db, 'attempts'), {
+      levelId: attempt.levelId,
+      completed: attempt.completed,
+      timeSpent: attempt.timeSpent,
+      errorCount: attempt.errorCount,
+      playerName: attempt.playerName,
+      playerPhone: attempt.playerPhone,
+      firstDrawTime: attempt.firstDrawTime || 0,
+      avgPauseTime: attempt.avgPauseTime || 0,
+      maxPauseTime: attempt.maxPauseTime || 0,
       timestamp: serverTimestamp(),
-    };
-    // Remove undefined fields (Firestore doesn't support undefined)
-    Object.keys(data).forEach(key => {
-      if (data[key] === undefined) delete data[key];
     });
-    await addDoc(collection(db, 'attempts'), data);
     return true;
   } catch (error) {
     console.error('Failed to save attempt:', error);

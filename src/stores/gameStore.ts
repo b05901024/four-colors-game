@@ -132,7 +132,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
         completed: true,
         timeSpent,
         errorCount,
-        playerName: state.playerName,
+        playerName: state.playerName || '匿名',
         playerPhone: state.playerPhone || '',
         firstDrawTime: firstDrawSec,
         avgPauseTime: avgPause,
