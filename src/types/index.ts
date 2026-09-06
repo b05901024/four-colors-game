@@ -27,6 +27,8 @@ export interface Attempt {
   completed: boolean;
   timeSpent: number;
   errorCount: number;
+  playerName: string;
+  playerPhone?: string;
   timestamp: number;
   firstDrawTime?: number;
   avgPauseTime?: number;
@@ -47,7 +49,7 @@ export const GAME_COLORS: GameColor[] = [
   '#F1C40F', // Yellow
 ];
 
-export type GameScreen = 'menu' | 'levelSelect' | 'playing' | 'editor' | 'manageLevels' | 'stats';
+export type GameScreen = 'menu' | 'levelSelect' | 'playing' | 'editor' | 'manageLevels' | 'stats' | 'register';
 
 export interface GameState {
   currentLevel: Level | null;

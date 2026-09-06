@@ -88,7 +88,7 @@ export function MainMenu() {
 
         <div className="space-y-4">
           <button
-            onClick={() => setScreen('levelSelect')}
+            onClick={() => setScreen('register')}
             className="w-64 px-8 py-4 bg-white text-purple-600 text-xl font-bold rounded-xl shadow-lg hover:shadow-xl transition-shadow"
           >
             開始遊戲

@@ -14,11 +14,15 @@ interface GameStore {
   isCompleted: boolean;
   violations: string[];
   loading: boolean;
+  // Player info
+  playerName: string;
+  playerPhone: string;
   // Metrics
   firstDrawTime: number | null;
   lastDrawTime: number | null;
   pauseTimes: number[];
   setScreen: (screen: GameScreen) => void;
+  setPlayerInfo: (name: string, phone: string) => void;
   loadLevels: () => Promise<void>;
   selectLevel: (level: Level) => void;
   selectColor: (color: GameColor) => void;
@@ -41,11 +45,15 @@ export const useGameStore = create<GameStore>((set, get) => ({
   isCompleted: false,
   violations: [],
   loading: false,
+  playerName: '',
+  playerPhone: '',
   firstDrawTime: null,
   lastDrawTime: null,
   pauseTimes: [],
 
   setScreen: (screen) => set({ screen }),
+
+  setPlayerInfo: (name, phone) => set({ playerName: name, playerPhone: phone }),
 
   loadLevels: async () => {
     set({ loading: true });
@@ -124,6 +132,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
         completed: true,
         timeSpent,
         errorCount,
+        playerName: state.playerName,
+        playerPhone: state.playerPhone || undefined,
         firstDrawTime: firstDrawSec,
         avgPauseTime: avgPause,
         maxPauseTime: maxPause,

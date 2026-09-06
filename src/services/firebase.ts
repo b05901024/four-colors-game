@@ -234,6 +234,8 @@ export async function saveAttempt(attempt: {
   completed: boolean;
   timeSpent: number;
   errorCount: number;
+  playerName: string;
+  playerPhone?: string;
   firstDrawTime?: number;
   avgPauseTime?: number;
   maxPauseTime?: number;
@@ -267,5 +269,18 @@ export async function getAttempts(): Promise<any[]> {
   } catch (error) {
     console.error('Failed to fetch attempts:', error);
     return [];
+  }
+}
+
+export async function deleteAttempt(attemptId: string): Promise<boolean> {
+  const { db } = initFirebase();
+  if (!db) return false;
+
+  try {
+    await deleteDoc(doc(db, 'attempts', attemptId));
+    return true;
+  } catch (error) {
+    console.error('Failed to delete attempt:', error);
+    return false;
   }
 }

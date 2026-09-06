@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useGameStore } from '../../stores/gameStore';
-import { getAttempts } from '../../services/firebase';
+import { getAttempts, deleteAttempt, isOwner } from '../../services/firebase';
 
 interface Attempt {
   id: string;
@@ -8,6 +8,8 @@ interface Attempt {
   completed: boolean;
   timeSpent: number;
   errorCount: number;
+  playerName: string;
+  playerPhone?: string;
   firstDrawTime?: number;
   avgPauseTime?: number;
   maxPauseTime?: number;
@@ -18,16 +20,30 @@ export function StatsScreen() {
   const { setScreen, levels } = useGameStore();
   const [attempts, setAttempts] = useState<Attempt[]>([]);
   const [loading, setLoading] = useState(true);
+  const [owner, setOwner] = useState(false);
 
   useEffect(() => {
     loadAttempts();
+    checkOwner();
   }, []);
+
+  const checkOwner = async () => {
+    const user = (await import('firebase/auth')).getAuth().currentUser;
+    if (user) setOwner(await isOwner(user));
+  };
 
   const loadAttempts = async () => {
     setLoading(true);
     const data = await getAttempts();
     setAttempts(data);
     setLoading(false);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('確定刪除此筆紀錄？')) return;
+    if (await deleteAttempt(id)) {
+      setAttempts(attempts.filter(a => a.id !== id));
+    }
   };
 
   const completedAttempts = attempts.filter(a => a.completed);
@@ -124,23 +140,38 @@ export function StatsScreen() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="text-left text-gray-500 border-b">
+                    <th className="pb-2">名字</th>
+                    <th className="pb-2">電話</th>
                     <th className="pb-2">關卡</th>
                     <th className="pb-2">時間</th>
                     <th className="pb-2">錯誤</th>
                     <th className="pb-2">首次著色</th>
                     <th className="pb-2">平均停頓</th>
                     <th className="pb-2">最長停頓</th>
+                    {owner && <th className="pb-2"></th>}
                   </tr>
                 </thead>
                 <tbody>
                   {completedAttempts.map((attempt) => (
                     <tr key={attempt.id} className="border-b last:border-b-0">
+                      <td className="py-2 text-gray-700">{attempt.playerName || '-'}</td>
+                      <td className="py-2 text-gray-500">{attempt.playerPhone || '-'}</td>
                       <td className="py-2 text-gray-700">{getLevelName(attempt.levelId)}</td>
                       <td className="py-2">{attempt.timeSpent}秒</td>
                       <td className="py-2">{attempt.errorCount}</td>
                       <td className="py-2">{attempt.firstDrawTime || 0}秒</td>
                       <td className="py-2">{attempt.avgPauseTime || 0}秒</td>
                       <td className="py-2">{attempt.maxPauseTime || 0}秒</td>
+                      {owner && (
+                        <td className="py-2">
+                          <button
+                            onClick={() => handleDelete(attempt.id)}
+                            className="text-red-500 hover:text-red-700 text-xs"
+                          >
+                            刪除
+                          </button>
+                        </td>
+                      )}
                     </tr>
                   ))}
                 </tbody>

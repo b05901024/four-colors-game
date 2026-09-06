@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useGameStore } from './stores/gameStore';
 import { MainMenu } from './components/UI/MainMenu';
+import { RegisterScreen } from './components/UI/RegisterScreen';
 import { LevelSelect } from './components/Game/LevelSelect';
 import { GameScreen } from './components/Game/GameScreen';
 import { LevelManager } from './components/Game/LevelManager';
@@ -17,6 +18,8 @@ function App() {
   switch (screen) {
     case 'menu':
       return <MainMenu />;
+    case 'register':
+      return <RegisterScreen />;
     case 'levelSelect':
       return <LevelSelect />;
     case 'playing':
