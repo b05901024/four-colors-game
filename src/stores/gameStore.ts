@@ -137,7 +137,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
         firstDrawTime: firstDrawSec,
         avgPauseTime: avgPause,
         maxPauseTime: maxPause,
-      });
+      }).catch(err => console.error('Failed to save attempt:', err));
     }
   },
 
